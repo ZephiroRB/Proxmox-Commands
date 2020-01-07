@@ -1,0 +1,82 @@
+
+auto lo
+iface lo inet loopback
+
+auto eth0
+iface eth0 inet manual
+
+iface eth1 inet manual
+
+auto vmbr1
+iface vmbr1 inet manual
+	bridge_ports dummy0
+	bridge_stp off
+	bridge_fd 0
+
+auto vmbr0
+iface vmbr0 inet static
+	address  51.75.135.31
+	netmask  255.255.255.0
+	gateway  151.80.19.254
+	broadcast  151.80.19.255
+	bridge_ports eth0
+	bridge_stp off
+	bridge_fd 0
+	network 151.80.19.0
+
+iface vmbr0 inet6 static
+	address  2001:41d0:000c:0ab4::
+	netmask  64
+	post-up /sbin/ip -f inet6 route add 2001:41d0:000c:0aff:ff:ff:ff:ff dev vmbr0
+	post-up /sbin/ip -f inet6 route add default via 2001:41d0:000c:0aff:ff:ff:ff:ff
+	pre-down /sbin/ip -f inet6 route del default via 2001:41d0:000c:0aff:ff:ff:ff:ff
+	pre-down /sbin/ip -f inet6 route del 2001:41d0:000c:0aff:ff:ff:ff:ff dev vmbr0
+
+auto vmbr2
+iface vmbr2 inet static
+	address  192.168.0.254
+	netmask  255.255.255.0
+	bridge_ports none
+	bridge_stp off
+	bridge_fd 0
+	post-up echo 1 > /proc/sys/net/ipv4/ip_forward
+	post-up iptables -t nat -A POSTROUTING -s '192.168.0.0/24' -o vmbr0 -j MASQUERADE
+	post-down iptables -t nat -D POSTROUTING -s '192.168.0.0/24' -o vmbr0 -j MASQUERADE
+
+
+
+#ES
+auto vmbr3
+iface vmbr3 inet static
+	address  164.132.214.254
+	netmask  255.255.255.0
+	bridge_ports none
+	bridge_stp off
+	bridge_fd 0
+	post-up echo 1 > /proc/sys/net/ipv4/ip_forward
+	post-up iptables -t nat -A POSTROUTING -s '164.132.214.0/24' -o vmbr0 -j MASQUERADE
+	post-down iptables -t nat -D POSTROUTING -s '164.132.214.0/24' -o vmbr0 -j MASQUERADE
+
+# ES
+auto vmbr4
+iface vmbr4 inet static
+	address  46.105.250.254
+	netmask  255.255.255.0
+	bridge_ports none
+	bridge_stp off
+	bridge_fd 0
+	post-up echo 1 > /proc/sys/net/ipv4/ip_forward
+	post-up iptables -t nat -A POSTROUTING -s '46.105.250.0/24' -o vmbr0 -j MASQUERADE
+	post-down iptables -t nat -D POSTROUTING -s '46.105.250.0/24' -o vmbr0 -j MASQUERADE
+
+# UK
+auto vmbr5
+iface vmbr5 inet static
+	address  147.135.184.254
+	netmask  255.255.255.0
+	bridge_ports none
+	bridge_stp off
+	bridge_fd 0
+	post-up echo 1 > /proc/sys/net/ipv4/ip_forward
+	post-up iptables -t nat -A POSTROUTING -s '147.135.184.0/24' -o vmbr0 -j MASQUERADE
+	post-down iptables -t nat -D POSTROUTING -s '147.135.184.0/24' -o vmbr0 -j MASQUERADE
