@@ -12,3 +12,7 @@ pct restore ID folder.lzo
 #PATH DUMP BACKUP
 /var/lib/vz/dump/dump/
 
+#RESIZE CHANGE ID
+pct resize ID rootfs 90G
+
+
